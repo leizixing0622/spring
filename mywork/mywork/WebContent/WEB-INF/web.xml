@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns="http://java.sun.com/xml/ns/javaee" 
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd" 
+	version="3.0">
+    <display-name>mywork</display-name>
+    <welcome-file-list>
+    <welcome-file>login.jsp</welcome-file>
+    </welcome-file-list>
+    <!-- 引用父上下文 -->
+	<context-param>
+		<param-name>contextConfigLocation</param-name>
+		<param-value>classpath:applicationContext.xml</param-value>
+	</context-param>  
+	<listener>
+		<listener-class>
+			org.springframework.web.context.ContextLoaderListener
+		</listener-class>
+	</listener>
+	<servlet>
+  		<servlet-name>springmvc</servlet-name>
+  		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+  		<load-on-startup>1</load-on-startup>
+    </servlet>
+  
+  	<servlet-mapping>
+  		<servlet-name>springmvc</servlet-name>
+  		<url-pattern>/</url-pattern>
+  	</servlet-mapping>
+  	
+  	<!-- 配置验证登录过滤器 -->
+  	<filter>
+  		<filter-name>forumFilter</filter-name>
+  		<filter-class>com.imooc.filter.ForumFilter</filter-class>
+  	</filter>
+  	<filter-mapping>
+  		<filter-name>forumFilter</filter-name>
+		<url-pattern>*.html</url-pattern>
+  	</filter-mapping>
+  	<filter-mapping>
+  		<filter-name>forumFilter</filter-name>
+		<url-pattern>*.jsp</url-pattern>
+  	</filter-mapping>
+  	
+  	<!-- 为请求统一设置编码 -->
+  	<filter>
+  		<filter-name>encodingFilter</filter-name>
+  		<filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
+  		<init-param>
+  			<param-name>encoding</param-name>
+  			<param-value>UTF-8</param-value>
+  		</init-param>
+  		<init-param>
+  			<param-name>forceEncoding</param-name>
+  			<param-value>true</param-value>
+  		</init-param>
+  	</filter>
+  	<filter-mapping>
+  		<filter-name>encodingFilter</filter-name>
+  		<url-pattern>*.html</url-pattern>
+  	</filter-mapping>
+</web-app>

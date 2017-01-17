@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" 
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+	    http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.0.xsd
+	    http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd
+	    http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd
+	    http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.0.xsd
+	    http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-4.0.xsd"
+	    xmlns:util="http://www.springframework.org/schema/util"
+	    xmlns:context="http://www.springframework.org/schema/context"
+	    xmlns:aop="http://www.springframework.org/schema/aop"
+	    xmlns:tx="http://www.springframework.org/schema/tx"
+	    xmlns:mvc="http://www.springframework.org/schema/mvc">
+	    
+	    <context:component-scan base-package="com.imooc.controller"></context:component-scan>
+		<mvc:annotation-driven/>
+	    <!-- 配置视图解析 -->
+	    
+	    <bean id="" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+	    	<property name="prefix" value="/WEB-INF/views/"></property>
+	    	<property name="suffix" value=".jsp"></property>
+	    </bean>
+	    <!-- 配置静态资源文件 -->
+	   <mvc:resources location="/js/" mapping="/js/**"/>
+	   <mvc:resources location="/css/" mapping="/css/**"/>
+	   <mvc:resources location="/img/" mapping="/img/**"/>
+	   
+</beans>

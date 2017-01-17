@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:context="http://www.springframework.org/schema/context" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"  
+    xmlns:tx="http://www.springframework.org/schema/tx" xmlns:p="http://www.springframework.org/schema/p" xmlns:util="http://www.springframework.org/schema/util" xmlns:jdbc="http://www.springframework.org/schema/jdbc"  
+    xmlns:cache="http://www.springframework.org/schema/cache"  
+    xsi:schemaLocation="  
+    http://www.springframework.org/schema/context  
+    http://www.springframework.org/schema/context/spring-context.xsd  
+    http://www.springframework.org/schema/beans  
+    http://www.springframework.org/schema/beans/spring-beans.xsd  
+    http://www.springframework.org/schema/tx  
+    http://www.springframework.org/schema/tx/spring-tx.xsd  
+    http://www.springframework.org/schema/jdbc  
+    http://www.springframework.org/schema/jdbc/spring-jdbc-3.1.xsd  
+    http://www.springframework.org/schema/cache  
+    http://www.springframework.org/schema/cache/spring-cache-3.1.xsd  
+    http://www.springframework.org/schema/aop  
+    http://www.springframework.org/schema/aop/spring-aop.xsd  
+    http://www.springframework.org/schema/util  
+    http://www.springframework.org/schema/util/spring-util.xsd"> 
+    
+    <context:component-scan base-package="com.imooc.service" />
+    <context:component-scan base-package="com.imooc.dao" />
+    <bean id="propertyConfigurer"        class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">         
+	     <property name="location">             
+	        <value>classpath:mysql.properties</value>  
+	     </property>  
+    </bean>
+    <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">         
+	 	<property name="url">              
+			<value>${jdbc.url}</value>   
+		 </property>          
+		<property name="driverClassName">   
+		 	<value>${jdbc.driver}</value>          
+		</property>          
+		<property name="username">             
+			<value>${jdbc.username}</value>          
+		</property>         
+	 	<property name="password">            
+		 	<value>${jdbc.password}</value>          
+		</property>      
+	</bean>  
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="dataSource" ref="dataSource" />
+    	<property name="typeAliasesPackage" value="com.imooc.entities"></property>
+        <property name="mapperLocations" value="classpath*:com/imooc/dao/*Mapper.xml"></property>
+    </bean>
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"></property>
+        <property name="basePackage" value="com.imooc.dao"></property>
+    </bean>
+    <!-- <bean id="sqlSessionTemplate" class="org.mybatis.spring.SqlSessionTemplate">
+        <constructor-arg index="0" ref="sqlSessionFactory"></constructor-arg>
+    </bean> -->
+     <!--配置事务管理器-->
+    <bean id="transactionManager"
+        class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource"></property>
+    </bean>
+    <!--需要回滚的方法-->
+    <tx:advice id="serviceAdvice" transaction-manager="transactionManager">
+        <tx:attributes>
+            <!--当代理的service层中的方法抛出异常的时候才回滚,必须加rollback-for参数-->
+            <tx:method name="*" propagation="REQUIRED" rollback-for="Java.lang.Exception" />
+            <!--除了上面标识的方法,其他方法全是只读方法-->
+            <tx:method name="*" read-only="false" />
+        </tx:attributes>
+    </tx:advice>
+    <!-- 配置哪些类的方法需要进行事务管理 -->
+    <aop:config proxy-target-class="true">
+        <aop:pointcut id="servicePointcut"
+            expression="execution(* com.imooc.service.*ServiceImpl.*(..))" />            
+        <aop:advisor pointcut-ref="servicePointcut" advice-ref="serviceAdvice" />
+    </aop:config>
+</beans>
